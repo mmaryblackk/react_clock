@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React from 'react';
 import './App.scss';
 import { Clock } from './components/Clock/Clock';
@@ -34,13 +35,26 @@ export class App extends React.Component<{}, State> {
     document.addEventListener('contextmenu', this.handleContextMenu);
     document.addEventListener('click', this.handleClick);
 
+    // Clear any existing timer before setting a new one
+    if (this.timerId) {
+      window.clearInterval(this.timerId);
+    }
+
     this.timerId = window.setInterval(() => {
-      this.setState({ clockName: getRandomName() });
+      this.setState(prevState => {
+        const newName = getRandomName();
+
+        console.warn(`Renamed from ${prevState.clockName} to ${newName}`);
+
+        return { clockName: newName };
+      });
     }, 3300);
   }
 
   componentWillUnmount(): void {
-    window.clearInterval(this.timerId);
+    if (this.timerId) {
+      window.clearInterval(this.timerId);
+    }
 
     document.removeEventListener('contextmenu', this.handleContextMenu);
     document.removeEventListener('click', this.handleClick);
