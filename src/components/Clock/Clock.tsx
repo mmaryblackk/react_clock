@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React from 'react';
 
 interface Props {
@@ -8,25 +9,25 @@ interface ClockState {
   today: Date;
 }
 
-export class Clock extends React.Component<Props> {
+export class Clock extends React.Component<Props, ClockState> {
   state: ClockState = {
     today: new Date(),
   };
 
-  handleTimeUpdate = 0;
+  timerId: number | null = null;
 
   componentDidMount(): void {
-    this.handleTimeUpdate = window.setInterval(() => {
-      this.setState(() => ({ today: new Date() }));
+    this.timerId = window.setInterval(() => {
+      this.setState({ today: new Date() });
     }, 1000);
   }
 
   componentDidUpdate(prevProps: Readonly<Props>): void {
-    // eslint-disable-next-line no-console
-    console.log(this.state.today.toUTCString().slice(-12, -4));
+    const timeString = this.state.today.toUTCString().slice(-12, -4);
+
+    console.log(timeString);
 
     if (prevProps.clockName !== this.props.clockName) {
-      // eslint-disable-next-line no-console
       console.warn(
         `Renamed from ${prevProps.clockName} to ${this.props.clockName}`,
       );
@@ -34,7 +35,9 @@ export class Clock extends React.Component<Props> {
   }
 
   componentWillUnmount(): void {
-    window.clearInterval(this.handleTimeUpdate);
+    if (this.timerId) {
+      window.clearInterval(this.timerId);
+    }
   }
 
   render() {
@@ -44,9 +47,7 @@ export class Clock extends React.Component<Props> {
     return (
       <div className="Clock">
         <strong className="Clock__name">{clockName}</strong>
-
         {' time is '}
-
         <span className="Clock__time">
           {today.toUTCString().slice(-12, -4)}
         </span>

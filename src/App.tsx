@@ -20,7 +20,7 @@ export class App extends React.Component<{}, State> {
     hasClock: true,
   };
 
-  timerId = 0;
+  timerId: number | null = null;
 
   handleContextMenu = (event: MouseEvent) => {
     event.preventDefault();
@@ -35,19 +35,8 @@ export class App extends React.Component<{}, State> {
     document.addEventListener('contextmenu', this.handleContextMenu);
     document.addEventListener('click', this.handleClick);
 
-    // Clear any existing timer before setting a new one
-    if (this.timerId) {
-      window.clearInterval(this.timerId);
-    }
-
     this.timerId = window.setInterval(() => {
-      this.setState(prevState => {
-        const newName = getRandomName();
-
-        console.warn(`Renamed from ${prevState.clockName} to ${newName}`);
-
-        return { clockName: newName };
-      });
+      this.setState({ clockName: getRandomName() });
     }, 3300);
   }
 
@@ -66,7 +55,6 @@ export class App extends React.Component<{}, State> {
     return (
       <div className="App">
         <h1>React clock</h1>
-
         {hasClock && <Clock clockName={clockName} />}
       </div>
     );
