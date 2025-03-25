@@ -20,7 +20,7 @@ export class App extends React.Component<{}, State> {
     hasClock: true,
   };
 
-  timerId: number | null = null;
+  timerId: number | undefined;
 
   handleContextMenu = (event: MouseEvent) => {
     event.preventDefault();
@@ -41,9 +41,7 @@ export class App extends React.Component<{}, State> {
   }
 
   componentWillUnmount(): void {
-    if (this.timerId) {
-      window.clearInterval(this.timerId);
-    }
+    window.clearInterval(this.timerId);
 
     document.removeEventListener('contextmenu', this.handleContextMenu);
     document.removeEventListener('click', this.handleClick);

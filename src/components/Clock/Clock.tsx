@@ -14,19 +14,19 @@ export class Clock extends React.Component<Props, ClockState> {
     today: new Date(),
   };
 
-  timerId: number | null = null;
+  timerId: number | undefined;
 
   componentDidMount(): void {
     this.timerId = window.setInterval(() => {
-      this.setState({ today: new Date() });
+      const currentDate = new Date();
+
+      this.setState({ today: currentDate });
+
+      console.log(currentDate.toUTCString().slice(-12, -4));
     }, 1000);
   }
 
   componentDidUpdate(prevProps: Readonly<Props>): void {
-    const timeString = this.state.today.toUTCString().slice(-12, -4);
-
-    console.log(timeString);
-
     if (prevProps.clockName !== this.props.clockName) {
       console.warn(
         `Renamed from ${prevProps.clockName} to ${this.props.clockName}`,
@@ -35,9 +35,7 @@ export class Clock extends React.Component<Props, ClockState> {
   }
 
   componentWillUnmount(): void {
-    if (this.timerId) {
-      window.clearInterval(this.timerId);
-    }
+    window.clearInterval(this.timerId);
   }
 
   render() {
